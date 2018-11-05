@@ -6,6 +6,14 @@ docker-compose build
 docker-compose up
 ```
 Backend container listen by default on port 8888, to change that use environment variables in docker-compose.yml file.
+
+You can settup (defaults in parentheses):
+  - TEMPERATURE_API_URL(=http://temperature:8000/) - temperature api url
+  - WINDSPEED_API_URL(=http://windspeed:8080/)
+  - API_HOST(=0.0.0.0) - api host
+  - API_PORT(=8888) - api port
+  - API_WORKERS(=4) - number of gunicorn workers
+
 Documentation is stored in endpoints and library functions docstrings.
 
 Test containers perform tests, if it return something like:
