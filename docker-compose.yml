@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+
+  test:
+      build:
+        context: ./api
+        dockerfile: Dockerfile.test
+      environment:
+        - TEMPERATURE_API_URL=http://temperature:8000/
+        - WINDSPEED_API_URL=http://windspeed:8080/
+        - API_HOST=backend
+        - API_PORT=8888
+      volumes:
+        - ./api:/api
+      depends_on:
+        - backend
+      links:
+        - backend
+        - temperature
+        - windspeed
+
+  backend:
+      build:
+        context: ./api
+        dockerfile: Dockerfile
+      environment:
+        - TEMPERATURE_API_URL=http://temperature:8000/
+        - WINDSPEED_API_URL=http://windspeed:8080/
+        - API_HOST=0.0.0.0
+        - API_PORT=8888
+        - API_WORKERS=4
+      ports:
+        - "8888:8888"
+      volumes:
+        - ./api:/api
+      depends_on:
+        - temperature
+        - windspeed
+      links:
+        - temperature
+        - windspeed
+
+  temperature:
+    image: pluspeterpublic/temperature:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    restart: unless-stopped
+
+  windspeed:
+      image: pluspeterpublic/windspeed:latest
+      ports:
+        - "8080:8080"
+      environment:
+        - PORT=8080
+      restart: unless-stopped
+
